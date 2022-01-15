@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="wasm_exec.js"></script>
+    <script>
+        makeComponent = function(name, init) {
+            const Element = class extends HTMLElement {
+                constructor() {
+                    super();
+                    init.bind(this)();
+                }
+
+                connectedCallback() {
+                    this.connectedFunc();
+                }
+
+            };
+            customElements.define(name, Element);
+        };
+
+        const go = new Go();
+        WebAssembly
+            .instantiateStreaming(fetch("main.wasm"), go.importObject)
+            .then((result) => { go.run(result.instance) });
+    </script>
+</head>
+<body>
+    <my-table></my-table>
+    <my-table></my-table>
+    <my-table></my-table>
+</body>
+</html>
